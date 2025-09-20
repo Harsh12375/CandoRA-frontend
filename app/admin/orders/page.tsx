@@ -11,8 +11,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Search, Eye, Edit, Truck } from "lucide-react"
 
+type OrderStatus = "completed" | "processing" | "shipped" | "pending"
+type PaymentStatus = "paid" | "pending" | "failed"
+type Order = {
+  id: string
+  customer: string
+  email: string
+  items: number
+  total: number
+  status: OrderStatus
+  paymentStatus: PaymentStatus
+  date: string
+  address: string
+}
+
 // Mock orders data
-const ordersData = [
+const ordersData: Order[] = [
   {
     id: "#ORD-001",
     customer: "Rajesh Kumar",
@@ -69,13 +83,13 @@ export default function OrdersPage() {
   useEffect(() => {
     const token = localStorage.getItem("adminToken")
     if (!token) {
-      router.push("/admin")
+      router.push("/auth?role=admin")
       return
     }
     setIsLoading(false)
   }, [router])
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: OrderStatus): string => {
     switch (status) {
       case "completed":
         return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
@@ -90,7 +104,7 @@ export default function OrdersPage() {
     }
   }
 
-  const getPaymentStatusColor = (status) => {
+  const getPaymentStatusColor = (status: PaymentStatus): string => {
     switch (status) {
       case "paid":
         return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"

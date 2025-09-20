@@ -60,7 +60,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   const handleLogout = () => {
     localStorage.removeItem("adminToken")
-    router.push("/admin")
+    router.push("/auth?role=admin")
   }
 
   const toggleDarkMode = () => {

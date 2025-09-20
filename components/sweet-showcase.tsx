@@ -15,7 +15,7 @@ const sweetsData = [
     category: "Traditional",
     price: 12.5,
     stock: 25,
-    imageUrl: "https://i.postimg.cc/3J3Pnfsx/Gemini-Generated-Image-gyndi2gyndi2gynd.png",
+    imageUrl: "https://i.postimg.cc/NM0c9B47/Gemini-Generated-Image-gyndi2gyndi2gynd-removebg-preview-1.png",
     bgColor: "#f7e1d3",
   },
   {
@@ -24,7 +24,7 @@ const sweetsData = [
     category: "Bengali",
     price: 10.0,
     stock: 0,
-    imageUrl: "https://i.postimg.cc/xT01MRgK/Gemini-Generated-Image-jeutk2jeutk2jeut.png",
+    imageUrl: "https://i.postimg.cc/MGLSQgrC/Gemini-Generated-Image-jeutk2jeutk2jeut-removebg-preview.png",
     bgColor: "#f5faff",
   },
   {
@@ -33,7 +33,7 @@ const sweetsData = [
     category: "Premium",
     price: 25.0,
     stock: 15,
-    imageUrl: "https://i.postimg.cc/YqT8nV2z/Gemini-Generated-Image-2kd6ga2kd6ga2kd6.png",
+    imageUrl: "https://i.postimg.cc/JhvfnZsm/Gemini-Generated-Image-2kd6ga2kd6ga2kd6-removebg-preview.png",
     bgColor: "#f7f3e8",
   },
   {
@@ -42,7 +42,7 @@ const sweetsData = [
     category: "Traditional",
     price: 18.0,
     stock: 30,
-    imageUrl: "https://i.postimg.cc/43Ythvh2/Gemini-Generated-Image-jve0tejve0tejve0.png",
+    imageUrl: "https://i.postimg.cc/BbMN8fmD/Gemini-Generated-Image-jve0tejve0tejve0-removebg-preview.png",
     bgColor: "#fdf5f7",
   },
   {
@@ -51,7 +51,7 @@ const sweetsData = [
     category: "Festival",
     price: 15.0,
     stock: 20,
-    imageUrl: "https://i.postimg.cc/QC8dcsyN/Gemini-Generated-Image-ngz7f5ngz7f5ngz7.png",
+    imageUrl: "https://i.postimg.cc/nL1xhTym/Gemini-Generated-Image-ngz7f5ngz7f5ngz7-removebg-preview.png",
     bgColor: "#fff0b3",
   },
   {
@@ -60,7 +60,7 @@ const sweetsData = [
     category: "Crispy",
     price: 8.0,
     stock: 40,
-    imageUrl: "https://i.postimg.cc/RhhzM0Yt/Gemini-Generated-Image-fkayw1fkayw1fkay.png",
+    imageUrl: "https://i.postimg.cc/s2WcYNjB/Gemini-Generated-Image-fkayw1fkayw1fkay-removebg-preview.png",
     bgColor: "#ffecd5",
   },
   {
@@ -69,7 +69,7 @@ const sweetsData = [
     category: "Flaky",
     price: 12.0,
     stock: 12,
-    imageUrl: "https://i.postimg.cc/52wDWvtG/Gemini-Generated-Image-43y81l43y81l43y8.png",
+    imageUrl: "https://i.postimg.cc/htsJH82C/Gemini-Generated-Image-43y81l43y81l43y8-removebg-preview.png",
     bgColor: "#fff6e5",
   },
   {
@@ -78,7 +78,7 @@ const sweetsData = [
     category: "Milk",
     price: 14.0,
     stock: 18,
-    imageUrl: "https://i.postimg.cc/qM8d4Wbj/Gemini-Generated-Image-noymnbnoymnbnoym.png",
+    imageUrl: "https://i.postimg.cc/13znZ43T/Gemini-Generated-Image-noymnbnoymnbnoym-removebg-preview.png",
     bgColor: "#fce5d0",
   },
   {
@@ -87,7 +87,7 @@ const sweetsData = [
     category: "Western",
     price: 30.0,
     stock: 8,
-    imageUrl: "https://i.postimg.cc/Tw9Wzk8w/Gemini-Generated-Image-y3hx76y3hx76y3hx.png",
+    imageUrl: "https://i.postimg.cc/LXF8hsmm/Gemini-Generated-Image-y3hx76y3hx76y3hx-removebg-preview.png",
     bgColor: "#e5d4cf",
   },
   {
@@ -96,7 +96,7 @@ const sweetsData = [
     category: "Western",
     price: 28.0,
     stock: 5,
-    imageUrl: "https://i.postimg.cc/X70Yfft1/Gemini-Generated-Image-4c47th4c47th4c47.png",
+    imageUrl: "https://i.postimg.cc/t4Hg4Yz7/Gemini-Generated-Image-4c47th4c47th4c47-removebg-preview.png",
     bgColor: "#f6f0eb",
   },
 ]
@@ -237,6 +237,17 @@ export default function SweetShowcase() {
       animate={{ backgroundColor: currentSweet?.bgColor || "#f7e1d3" }}
       transition={{ duration: 0.8, ease: "easeInOut" }}
     >
+      {/* Decorative background blobs */}
+      <motion.div
+        className="pointer-events-none absolute -top-24 -left-24 w-72 h-72 rounded-full bg-gradient-to-br from-rose-200/40 to-pink-200/40 blur-3xl"
+        animate={{ y: [0, 10, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="pointer-events-none absolute -bottom-32 -right-24 w-96 h-96 rounded-full bg-gradient-to-tr from-amber-200/40 to-orange-200/40 blur-3xl"
+        animate={{ y: [0, -12, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      />
       {/* Sticky Header */}
       <motion.header
         className="fixed top-0 left-0 right-0 z-50 px-6 py-4 backdrop-blur-sm bg-white/10"
@@ -244,40 +255,39 @@ export default function SweetShowcase() {
         animate={{ y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <div className="flex justify-between items-center max-w-7xl mx-auto">
+        <div className="grid grid-cols-3 items-center max-w-7xl mx-auto bg-white/30 backdrop-blur-md rounded-full px-4 py-2 shadow-lg border border-white/50">
           <motion.div className="flex items-center space-x-2" whileHover={{ scale: 1.05 }}>
             <div className="w-8 h-8 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full"></div>
             <span className="font-display text-xl font-bold text-gray-800">CandoRA</span>
           </motion.div>
-
-          <div className="flex items-center space-x-4">
-            <div className="hidden md:flex items-center space-x-3">
-              <Input
-                placeholder="Search sweets..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-48 bg-white/50 border-white/30 text-sm"
-              />
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-32 bg-white/50 border-white/30 text-sm">
-                  <SelectValue placeholder="Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category === "all" ? "All" : category}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <div className="w-32">
-                <Slider value={priceRange} onValueChange={setPriceRange} max={50} min={0} step={1} className="w-full" />
-                <div className="text-xs text-gray-600 mt-1">
-                  ${priceRange[0]} - ${priceRange[1]}
-                </div>
+          <div className="hidden md:flex items-center justify-center space-x-3 justify-self-center">
+            <Input
+              placeholder="Search sweets..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-72 md:w-96 h-11 md:h-12 rounded-full px-4 bg-white/60 border-white/40 text-base"
+            />
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-40 h-11 md:h-12 rounded-full bg-white/60 border-white/40 text-base">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category === "all" ? "All" : category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="w-40">
+              <Slider value={priceRange} onValueChange={setPriceRange} max={50} min={0} step={1} className="w-full" />
+              <div className="text-xs text-gray-600 mt-1 text-center">
+                Rs {priceRange[0]} - Rs {priceRange[1]}
               </div>
             </div>
+          </div>
 
+          <div className="flex items-center justify-end">
             <motion.button
               onClick={() => setIsCartOpen(true)}
               className="relative p-3 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors"
@@ -323,7 +333,7 @@ export default function SweetShowcase() {
             <div className="flex-1">
               <Slider value={priceRange} onValueChange={setPriceRange} max={50} min={0} step={1} className="w-full" />
               <div className="text-xs text-gray-600 mt-1 text-center">
-                ${priceRange[0]} - ${priceRange[1]}
+                Rs {priceRange[0]} - Rs {priceRange[1]}
               </div>
             </div>
           </div>
@@ -359,7 +369,7 @@ export default function SweetShowcase() {
             >
               <div className="space-y-4">
                 <motion.p
-                  className="text-sm uppercase tracking-wider text-gray-600 font-medium"
+                  className="inline-block text-xs uppercase tracking-wider font-medium text-gray-700 bg-white/70 rounded-full px-3 py-1 shadow-sm"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.3 }}
@@ -377,12 +387,12 @@ export default function SweetShowcase() {
                 </motion.h1>
 
                 <motion.p
-                  className="text-3xl md:text-4xl font-bold text-rose-600"
+                  className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent drop-shadow"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.5 }}
                 >
-                  ${currentSweet.price.toFixed(2)}
+                  Rs {currentSweet.price.toFixed(2)}
                 </motion.p>
 
                 <motion.p
@@ -403,10 +413,10 @@ export default function SweetShowcase() {
                 <Button
                   onClick={() => addToCart(currentSweet)}
                   disabled={currentSweet.stock === 0}
-                  className={`px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 ${
+                  className={`px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 ring-1 ${
                     currentSweet.stock === 0
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white"
+                      ? "bg-gray-400 cursor-not-allowed ring-gray-300/30"
+                      : "bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white ring-rose-300/40 hover:shadow-rose-300/50"
                   }`}
                 >
                   {currentSweet.stock === 0 ? "Out of Stock" : "Add to Cart"}
@@ -416,16 +426,17 @@ export default function SweetShowcase() {
 
             {/* Right Side - Sweet Image */}
             <motion.div
-              className="flex justify-center lg:justify-end"
+              className="relative flex justify-center lg:justify-end"
               key={`image-${currentIndex}`}
               initial={{ opacity: 0, x: 50, scale: 0.8 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
+              <div className="absolute -z-10 w-72 h-72 md:w-[30rem] md:h-[30rem] rounded-full bg-gradient-to-br from-rose-200/60 via-pink-100/60 to-amber-100/60 blur-3xl translate-y-6" />
               <motion.img
                 src={currentSweet.imageUrl}
                 alt={currentSweet.name}
-                className="w-80 h-80 md:w-96 md:h-96 object-contain drop-shadow-2xl"
+                className="w-96 h-96 md:w-[28rem] md:h-[28rem] object-contain drop-shadow-2xl"
                 whileHover={{ scale: 1.05, rotate: 2 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
               />
@@ -441,8 +452,10 @@ export default function SweetShowcase() {
             <motion.button
               key={index}
               onClick={() => navigateToSection(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentIndex ? "bg-rose-500 scale-125" : "bg-white/50 hover:bg-white/70"
+              className={`w-3 h-3 rounded-full ring-2 transition-all duration-300 ${
+                index === currentIndex
+                  ? "bg-rose-500 ring-rose-300 shadow-lg scale-125"
+                  : "bg-white/70 hover:bg-white/90 ring-white/80"
               }`}
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}
@@ -456,10 +469,10 @@ export default function SweetShowcase() {
           <motion.button
             onClick={prevSection}
             disabled={currentIndex === 0}
-            className={`p-3 rounded-full backdrop-blur-sm transition-all duration-300 ${
+            className={`p-4 rounded-full backdrop-blur-md shadow-lg transition-all duration-300 ${
               currentIndex === 0
-                ? "bg-white/20 text-gray-400 cursor-not-allowed"
-                : "bg-white/30 text-gray-700 hover:bg-white/50"
+                ? "bg-white/30 text-gray-400 cursor-not-allowed"
+                : "bg-white/60 text-gray-700 hover:bg-white/80"
             }`}
             whileHover={currentIndex > 0 ? { scale: 1.1 } : {}}
             whileTap={currentIndex > 0 ? { scale: 0.95 } : {}}
@@ -470,10 +483,10 @@ export default function SweetShowcase() {
           <motion.button
             onClick={nextSection}
             disabled={currentIndex === filteredSweets.length - 1}
-            className={`p-3 rounded-full backdrop-blur-sm transition-all duration-300 ${
+            className={`p-4 rounded-full backdrop-blur-md shadow-lg transition-all duration-300 ${
               currentIndex === filteredSweets.length - 1
-                ? "bg-white/20 text-gray-400 cursor-not-allowed"
-                : "bg-white/30 text-gray-700 hover:bg-white/50"
+                ? "bg-white/30 text-gray-400 cursor-not-allowed"
+                : "bg-white/60 text-gray-700 hover:bg-white/80"
             }`}
             whileHover={currentIndex < filteredSweets.length - 1 ? { scale: 1.1 } : {}}
             whileTap={currentIndex < filteredSweets.length - 1 ? { scale: 0.95 } : {}}
@@ -486,7 +499,7 @@ export default function SweetShowcase() {
       {/* Section Counter */}
       {filteredSweets.length > 0 && (
         <motion.div
-          className="fixed bottom-6 left-6 z-40 text-gray-700 font-medium"
+          className="fixed bottom-6 left-6 z-40 text-gray-700 font-medium bg-white/50 backdrop-blur-md rounded-full px-4 py-2 shadow-lg border border-white/60"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
@@ -535,7 +548,7 @@ export default function SweetShowcase() {
                         />
                         <div className="flex-1">
                           <h3 className="font-semibold text-gray-800">{item.name}</h3>
-                          <p className="text-rose-600 font-medium">${item.price.toFixed(2)}</p>
+                          <p className="text-rose-600 font-medium">Rs {item.price.toFixed(2)}</p>
                         </div>
                         <div className="flex items-center space-x-2">
                           <button
@@ -561,7 +574,7 @@ export default function SweetShowcase() {
                   <div className="border-t pt-4 space-y-4">
                     <div className="flex justify-between items-center text-xl font-bold">
                       <span>Total:</span>
-                      <span className="text-rose-600">${getTotalPrice().toFixed(2)}</span>
+                      <span className="text-rose-600">Rs {getTotalPrice().toFixed(2)}</span>
                     </div>
                     <Button className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white py-3 text-lg font-semibold">
                       Purchase Now

@@ -12,6 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
+import { useToast } from "@/components/ui/use-toast"
+import type { CheckedState } from "@radix-ui/react-checkbox"
 import {
   Search,
   Download,
@@ -27,8 +29,28 @@ import {
   Minus,
 } from "lucide-react"
 
+// Types
+interface InventoryItem {
+  id: number
+  name: string
+  sku: string
+  category: string
+  currentStock: number
+  minStock: number
+  maxStock: number
+  unitPrice: number
+  totalValue: number
+  supplier: string
+  lastRestocked: string
+  status: string
+  movement: "up" | "down"
+  weeklyChange: number
+}
+
+type StockUpdateType = "update" | "add" | "remove"
+
 // Mock inventory data
-const inventoryData = [
+const inventoryData: InventoryItem[] = [
   {
     id: 1,
     name: "Gulab Jamun",
@@ -135,19 +157,28 @@ export default function InventoryPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [categoryFilter, setCategoryFilter] = useState("all")
   const [statusFilter, setStatusFilter] = useState("all")
-  const [sortField, setSortField] = useState("name")
-  const [sortDirection, setSortDirection] = useState("asc")
-  const [selectedItems, setSelectedItems] = useState([])
+  type SortField = "name" | "sku" | "category" | "currentStock" | "unitPrice" | "totalValue" | "status" | "supplier" | "lastRestocked"
+  const [sortField, setSortField] = useState<SortField>("name")
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>("asc")
+  const [selectedItems, setSelectedItems] = useState<number[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const [isStockUpdateOpen, setIsStockUpdateOpen] = useState(false)
-  const [stockUpdateItem, setStockUpdateItem] = useState(null)
+  const [stockUpdateItem, setStockUpdateItem] = useState<InventoryItem | null>(null)
   const [stockUpdateValue, setStockUpdateValue] = useState("")
+  const [viewMode, setViewMode] = useState<"list" | "grid">("list")
+  const [isAddOpen, setIsAddOpen] = useState(false)
+  const [newItem, setNewItem] = useState({ name: "", category: "Indian", unitPrice: "", currentStock: "" })
+  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [editItem, setEditItem] = useState<any>(null)
+  const { toast } = useToast()
+  const [priceMin, setPriceMin] = useState<string>("")
+  const [priceMax, setPriceMax] = useState<string>("")
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken")
     if (!token) {
-      router.push("/admin")
+      router.push("/auth?role=admin")
       return
     }
     setIsLoading(false)
@@ -173,28 +204,55 @@ export default function InventoryPage() {
       filtered = filtered.filter((item) => item.status === statusFilter)
     }
 
+    // Price filter
+    if (priceMin !== "") {
+      const min = Number.parseFloat(priceMin)
+      filtered = filtered.filter((item) => item.unitPrice >= min)
+    }
+    if (priceMax !== "") {
+      const max = Number.parseFloat(priceMax)
+      filtered = filtered.filter((item) => item.unitPrice <= max)
+    }
+
     // Sort
+    const valueOf = (obj: InventoryItem, field: SortField): string | number => {
+      switch (field) {
+        case "name":
+          return obj.name
+        case "sku":
+          return obj.sku
+        case "category":
+          return obj.category
+        case "currentStock":
+          return obj.currentStock
+        case "unitPrice":
+          return obj.unitPrice
+        case "totalValue":
+          return obj.totalValue
+        case "status":
+          return obj.status
+        case "supplier":
+          return obj.supplier
+        case "lastRestocked":
+          return obj.lastRestocked
+      }
+    }
+
     filtered.sort((a, b) => {
-      let aValue = a[sortField]
-      let bValue = b[sortField]
-
-      if (typeof aValue === "string") {
-        aValue = aValue.toLowerCase()
-        bValue = bValue.toLowerCase()
-      }
-
-      if (sortDirection === "asc") {
-        return aValue > bValue ? 1 : -1
-      } else {
-        return aValue < bValue ? 1 : -1
-      }
+      const av = valueOf(a, sortField)
+      const bv = valueOf(b, sortField)
+      const normalize = (v: string | number) => (typeof v === "string" ? v.toLowerCase() : v)
+      const na = normalize(av)
+      const nb = normalize(bv)
+      if (sortDirection === "asc") return (na as any) > (nb as any) ? 1 : -1
+      return (na as any) < (nb as any) ? 1 : -1
     })
 
     setFilteredInventory(filtered)
     setCurrentPage(1)
-  }, [inventory, searchTerm, categoryFilter, statusFilter, sortField, sortDirection])
+  }, [inventory, searchTerm, categoryFilter, statusFilter, sortField, sortDirection, priceMin, priceMax])
 
-  const handleSort = (field) => {
+  const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc")
     } else {
@@ -203,23 +261,23 @@ export default function InventoryPage() {
     }
   }
 
-  const handleSelectAll = (checked) => {
-    if (checked) {
+  const handleSelectAll = (checked: CheckedState) => {
+    if (checked === true) {
       setSelectedItems(paginatedItems.map((item) => item.id))
     } else {
       setSelectedItems([])
     }
   }
 
-  const handleSelectItem = (itemId, checked) => {
-    if (checked) {
+  const handleSelectItem = (itemId: number, checked: CheckedState) => {
+    if (checked === true) {
       setSelectedItems([...selectedItems, itemId])
     } else {
       setSelectedItems(selectedItems.filter((id) => id !== itemId))
     }
   }
 
-  const handleStockUpdate = (item, type) => {
+  const handleStockUpdate = (item: InventoryItem, type: StockUpdateType) => {
     setStockUpdateItem(item)
     setStockUpdateValue("")
     setIsStockUpdateOpen(true)
@@ -244,10 +302,69 @@ export default function InventoryPage() {
       setIsStockUpdateOpen(false)
       setStockUpdateItem(null)
       setStockUpdateValue("")
+      toast({ title: "Stock updated", description: `${stockUpdateItem?.name} stock set to ${newStock}` })
     }
   }
 
-  const getStatusColor = (status) => {
+  const handleAddSweet = (e: React.FormEvent) => {
+    e.preventDefault()
+    const id = Math.max(...inventory.map((i) => i.id)) + 1
+    const unitPrice = Number.parseFloat(newItem.unitPrice as unknown as string)
+    const currentStock = Number.parseInt(newItem.currentStock as unknown as string)
+    const sku = `${newItem.name.substring(0, 2).toUpperCase()}${String(id).padStart(3, "0")}`
+    const totalValue = unitPrice * currentStock
+    const status = currentStock === 0 ? "Out of Stock" : currentStock < 20 ? "Low Stock" : "In Stock"
+    const item: InventoryItem = {
+      id,
+      name: newItem.name,
+      sku,
+      category: newItem.category,
+      currentStock,
+      minStock: 20,
+      maxStock: 100,
+      unitPrice,
+      totalValue,
+      supplier: "New Supplier",
+      lastRestocked: new Date().toISOString().split("T")[0],
+      status,
+      movement: "up",
+      weeklyChange: 0,
+    }
+    setInventory([item, ...inventory])
+    setIsAddOpen(false)
+    setNewItem({ name: "", category: "Indian", unitPrice: "", currentStock: "" })
+    toast({ title: "Sweet added", description: `${item.name} added to inventory` })
+  }
+
+  const openEdit = (item: any) => {
+    setEditItem({ ...item })
+    setIsEditOpen(true)
+  }
+
+  const handleEditSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setInventory(
+      inventory.map((i) => {
+        if (i.id !== editItem.id) return i
+        const updated: InventoryItem = {
+          ...i,
+          ...editItem,
+          totalValue: editItem.unitPrice * editItem.currentStock,
+        }
+        return updated
+      }),
+    )
+    setIsEditOpen(false)
+    toast({ title: "Sweet updated", description: `${editItem.name} has been updated` })
+  }
+
+  const handleDelete = (id: number) => {
+    const item = inventory.find((i) => i.id === id)
+    setInventory(inventory.filter((i) => i.id !== id))
+    toast({ title: "Sweet deleted", description: `${item?.name} removed from inventory` })
+  }
+
+  const getStatusColor = (status: string): string => {
     switch (status) {
       case "In Stock":
         return "bg-green-100 text-green-800"
@@ -407,11 +524,23 @@ export default function InventoryPage() {
                   <SelectItem value="50">50</SelectItem>
                 </SelectContent>
               </Select>
+
+              {/* View toggle */}
+              <div className="flex items-center gap-2">
+                <Button variant={viewMode === "list" ? "default" : "outline"} onClick={() => setViewMode("list")}>List</Button>
+                <Button variant={viewMode === "grid" ? "default" : "outline"} onClick={() => setViewMode("grid")}>Grid</Button>
+              </div>
+
+              {/* Price filter */}
+              <div className="flex items-center gap-2">
+                <Input type="number" placeholder="Min ₹" value={priceMin} onChange={(e) => setPriceMin(e.target.value)} className="w-24" />
+                <Input type="number" placeholder="Max ₹" value={priceMax} onChange={(e) => setPriceMax(e.target.value)} className="w-24" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Inventory Table */}
+        {/* Inventory Table / Grid */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
@@ -429,6 +558,7 @@ export default function InventoryPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
+            {viewMode === "list" ? (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -530,6 +660,12 @@ export default function InventoryPage() {
                           <Button size="sm" variant="outline" onClick={() => handleStockUpdate(item, "remove")}>
                             <Minus className="h-3 w-3" />
                           </Button>
+                          <Button size="sm" variant="outline" onClick={() => openEdit(item)}>
+                            Edit
+                          </Button>
+                          <Button size="sm" variant="destructive" onClick={() => handleDelete(item.id)}>
+                            Delete
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -537,6 +673,39 @@ export default function InventoryPage() {
                 </TableBody>
               </Table>
             </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {paginatedItems.map((item) => (
+                  <Card key={item.id} className="hover:shadow-lg transition-shadow">
+                    <CardContent className="p-4 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-semibold">{item.name}</h3>
+                        <Badge variant="outline">{item.category}</Badge>
+                      </div>
+                      <div className="text-sm text-gray-600">SKU: {item.sku}</div>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-sm text-gray-600">Stock</div>
+                          <div className="font-medium">{item.currentStock}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm text-gray-600">Unit Price</div>
+                          <div className="font-medium">₹{item.unitPrice}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <Badge className={getStatusColor(item.status)}>{item.status}</Badge>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="outline" onClick={() => handleStockUpdate(item, "update")}>Stock</Button>
+                          <Button size="sm" variant="outline" onClick={() => openEdit(item)}>Edit</Button>
+                          <Button size="sm" variant="destructive" onClick={() => handleDelete(item.id)}>Delete</Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
 
             {/* Pagination */}
             <div className="flex items-center justify-between mt-4">
@@ -600,6 +769,97 @@ export default function InventoryPage() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Add Sweet Dialog */}
+        <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add New Sweet</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleAddSweet} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input id="name" value={newItem.name} onChange={(e) => setNewItem({ ...newItem, name: e.target.value })} required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="category">Category</Label>
+                <Select value={newItem.category} onValueChange={(v) => setNewItem({ ...newItem, category: v })}>
+                  <SelectTrigger id="category">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Indian">Indian</SelectItem>
+                    <SelectItem value="Western">Western</SelectItem>
+                    <SelectItem value="Fusion">Fusion</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="unitPrice">Unit Price (₹)</Label>
+                  <Input id="unitPrice" type="number" step="0.01" value={newItem.unitPrice} onChange={(e) => setNewItem({ ...newItem, unitPrice: e.target.value })} required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="currentStock">Stock</Label>
+                  <Input id="currentStock" type="number" value={newItem.currentStock} onChange={(e) => setNewItem({ ...newItem, currentStock: e.target.value })} required />
+                </div>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button type="button" variant="outline" onClick={() => setIsAddOpen(false)}>Cancel</Button>
+                <Button type="submit" className="bg-orange-500 hover:bg-orange-600">Add Sweet</Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Sweet Dialog */}
+        <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Sweet - {editItem?.name}</DialogTitle>
+            </DialogHeader>
+            {editItem && (
+              <form onSubmit={handleEditSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="editName">Name</Label>
+                  <Input id="editName" value={editItem.name} onChange={(e) => setEditItem({ ...editItem, name: e.target.value })} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="editCategory">Category</Label>
+                  <Select value={editItem.category} onValueChange={(v) => setEditItem({ ...editItem, category: v })}>
+                    <SelectTrigger id="editCategory">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Indian">Indian</SelectItem>
+                      <SelectItem value="Western">Western</SelectItem>
+                      <SelectItem value="Fusion">Fusion</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="editPrice">Unit Price (₹)</Label>
+                    <Input id="editPrice" type="number" step="0.01" value={editItem.unitPrice} onChange={(e) => setEditItem({ ...editItem, unitPrice: Number.parseFloat(e.target.value) })} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="editStock">Stock</Label>
+                    <Input id="editStock" type="number" value={editItem.currentStock} onChange={(e) => setEditItem({ ...editItem, currentStock: Number.parseInt(e.target.value) })} />
+                  </div>
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
+                  <Button type="submit" className="bg-orange-500 hover:bg-orange-600">Save Changes</Button>
+                </div>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Floating Add Button */}
+        <Button onClick={() => setIsAddOpen(true)} className="fixed bottom-24 right-6 rounded-full w-14 h-14 bg-orange-500 hover:bg-orange-600 shadow-xl" aria-label="Add Sweet">
+          <Plus className="w-6 h-6" />
+        </Button>
       </div>
     </AdminLayout>
   )

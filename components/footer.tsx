@@ -10,7 +10,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <div className="text-2xl">🍭</div>
-              <span className="text-xl font-bold">Sweet Haus</span>
+              <span className="text-xl font-bold">CandoRA</span>
             </div>
             <p className="text-primary-foreground/80 mb-4">
               Bringing sweetness to your life with premium quality sweets and exceptional service.
@@ -97,11 +97,11 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-accent" />
-                <span className="text-primary-foreground/80 text-sm">+1 (555) 123-4567</span>
+                <span className="text-primary-foreground/80 text-sm">+91 9264423677</span>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-accent" />
-                <span className="text-primary-foreground/80 text-sm">hello@sweethaus.com</span>
+                <span className="text-primary-foreground/80 text-sm">hello@candora.com</span>
               </div>
             </div>
           </div>
@@ -109,7 +109,7 @@ export default function Footer() {
 
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center">
           <p className="text-primary-foreground/60 text-sm">
-            © 2024 Sweet Haus. All rights reserved. Made with ❤️ for sweet lovers everywhere.
+            © 2024 CandoRA. All rights reserved. Made with ❤️ for sweet lovers everywhere.
           </p>
         </div>
       </div>

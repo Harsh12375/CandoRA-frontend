@@ -82,7 +82,7 @@ export default function AnalyticsPage() {
   useEffect(() => {
     const token = localStorage.getItem("adminToken")
     if (!token) {
-      router.push("/admin")
+      router.push("/auth?role=admin")
       return
     }
     setIsLoading(false)

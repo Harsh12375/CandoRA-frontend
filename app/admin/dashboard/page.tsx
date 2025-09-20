@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 import AdminLayout from "@/components/admin-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -36,11 +37,12 @@ const topProducts = [
 export default function AdminDashboard() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
+  const today = new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken")
     if (!token) {
-      router.push("/admin")
+      router.push("/auth?role=admin")
       return
     }
 
@@ -48,12 +50,12 @@ export default function AdminDashboard() {
       const decoded = JSON.parse(atob(token))
       if (decoded.exp < Date.now()) {
         localStorage.removeItem("adminToken")
-        router.push("/admin")
+        router.push("/auth?role=admin")
         return
       }
     } catch {
       localStorage.removeItem("adminToken")
-      router.push("/admin")
+      router.push("/auth?role=admin")
       return
     }
 
@@ -68,15 +70,14 @@ export default function AdminDashboard() {
     <AdminLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Welcome back! Here's what's happening with your sweet shop.
-          </p>
-        </div>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome back, Admin!</h1>
+          <p className="text-gray-600 dark:text-gray-400">{today}</p>
+        </motion.div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.05 }}>
           <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -88,7 +89,9 @@ export default function AdminDashboard() {
               </div>
             </CardContent>
           </Card>
+          </motion.div>
 
+          <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>
           <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -100,7 +103,9 @@ export default function AdminDashboard() {
               </div>
             </CardContent>
           </Card>
+          </motion.div>
 
+          <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.15 }}>
           <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -112,7 +117,9 @@ export default function AdminDashboard() {
               </div>
             </CardContent>
           </Card>
+          </motion.div>
 
+          <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}>
           <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -124,6 +131,7 @@ export default function AdminDashboard() {
               </div>
             </CardContent>
           </Card>
+          </motion.div>
         </div>
 
         {/* Secondary Stats */}

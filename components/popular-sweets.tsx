@@ -85,7 +85,7 @@ export default function PopularSweets() {
                 <div className="p-4">
                   <h3 className="font-semibold text-lg mb-2 text-balance">{sweet.name}</h3>
                   <div className="flex items-center justify-between">
-                    <span className="text-xl font-bold text-primary">${sweet.price}</span>
+                    <span className="text-xl font-bold text-primary">Rs {sweet.price}</span>
                     <Button size="sm" className="gap-2">
                       <ShoppingCart className="w-4 h-4" />
                       Buy Now

@@ -43,7 +43,7 @@ export default function Header() {
               className={`flex items-center space-x-2 transition-all duration-500 ${isScrolled ? "hidden" : "flex"}`}
             >
               <div className="font-bold text-2xl">🍭</div>
-              <span className="font-bold text-primary-foreground text-xl">Sweet Haus</span>
+              <span className="font-bold text-primary-foreground text-xl">CandoRA</span>
             </div>
 
             <nav
