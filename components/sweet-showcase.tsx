@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ShoppingCart, ChevronUp, ChevronDown, X, Plus, Minus } from "lucide-react"
+import { ShoppingCart, ChevronUp, ChevronDown, X, Plus, Minus, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
+import { useRouter } from "next/navigation"
 
 const sweetsData = [
   {
@@ -110,6 +111,7 @@ interface CartItem {
 }
 
 export default function SweetShowcase() {
+  const router = useRouter()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [isCartOpen, setIsCartOpen] = useState(false)
@@ -229,6 +231,15 @@ export default function SweetShowcase() {
     }
   }
 
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem("userToken")
+    } catch (e) {
+      // ignore storage errors
+    }
+    router.push("/auth")
+  }
+
   const categories = ["all", ...Array.from(new Set(sweetsData.map((sweet) => sweet.category)))]
 
   return (
@@ -288,6 +299,15 @@ export default function SweetShowcase() {
           </div>
 
           <div className="flex items-center justify-end">
+            <motion.button
+              onClick={handleLogout}
+              className="mr-3 flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-gray-800 hover:bg-white/30 transition-colors"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="hidden sm:inline">Logout</span>
+            </motion.button>
             <motion.button
               onClick={() => setIsCartOpen(true)}
               className="relative p-3 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors"
