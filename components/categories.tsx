@@ -98,10 +98,10 @@ export default function Categories() {
             >
               <CardContent className="p-8 text-center relative overflow-hidden">
                 <div
-                  className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${hoveredCard === index ? category.hoverBg : category.bgGradient} transition-all duration-500`}
+                  className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${hoveredCard === index ? category.hoverBg : category.bgGradient} transition-all duration-500 z-0`}
                 />
 
-                <div className="relative w-20 h-20 mx-auto mb-6">
+                <div className="relative z-10 w-20 h-20 mx-auto mb-6">
                   <div
                     className={`
                     absolute inset-0 rounded-full bg-gradient-to-br ${category.iconBg}
@@ -124,9 +124,9 @@ export default function Categories() {
                   </div>
                 </div>
 
-                <h3 className={`font-bold text-xl mb-3 ${category.textColor} transition-colors`}>{category.name}</h3>
+                <h3 className={`relative z-10 font-bold text-xl mb-3 ${category.textColor} transition-colors`}>{category.name}</h3>
 
-                <div className="transition-all duration-300">
+                <div className="relative z-10 transition-all duration-300">
                   {hoveredCard === index ? (
                     <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 border border-gray-200 shadow-sm">
                       <p className={`text-sm ${category.hoverTextColor} leading-relaxed font-semibold animate-fade-in`}>
